@@ -1,0 +1,46 @@
+#__________________________________________________________________________________________________
+
+# Análise PIB 2020 - Municípios
+
+# Autor: Alexandre Barros
+# Email: alexandrepitstop@gmail.com
+
+# --/12/2022
+#__________________________________________________________________________________________________
+
+# Lista de pacotes necessários
+pacotes_necessarios <- c("geobr", "tidyverse", "sidrar")
+
+# Verificar e instalar pacotes que não estão instalados
+for (pacote in pacotes_necessarios) {
+  if (!require(pacote, character.only = TRUE)) {
+    install.packages(pacote)
+    library(pacote, character.only = TRUE)
+  }
+}
+
+
+# Pacotes
+library(sidrar)
+library(tidyverse)
+library(geobr)
+library(ggplot2)
+
+# Importação dos dados do PIB dos municípios no estado do Piauí (PI)
+df_pib_muni <- sidrar::get_sidra(5938,
+                            variable = 37,
+                            period = c('2021', '2020', '2019'),
+                            geo = "City",
+                            geo.filter = list("State" = 22))
+
+# Importação dos dados do PIB do estado do Piauí (PI)
+df_pib_state <- sidrar::get_sidra(5938,
+                                 variable = 37,
+                                 period = c('2021', '2020', '2019'),
+                                 geo = "State",
+                                 geo.filter = list("State" = 22))
+
+head(df_pib_muni)
+head(df_pib_state)
+
+

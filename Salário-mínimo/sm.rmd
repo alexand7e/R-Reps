@@ -1,0 +1,81 @@
+---
+title: "Salário Mínimo"
+author: "Grupo de R Economia UFPI"
+date: "2022-10-21"
+output: pdf_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+
+# dependências
+
+library(tidyverse)
+library(readxl)
+library(writexl)
+```
+
+## 1 Importação dos dados 
+## 1.1 Salário Mínimo
+
+```{r}
+# leitura
+sm <- read_xls("série_sm.xls")
+# altera o nome
+names(sm)[] <- c("Data", "Salário")
+# variável ano
+sm$Ano <- substr(sm$Data, 1, 4)
+# filtrando os dados
+sm <- sm %>% 
+  filter(Ano >= 2002) %>%
+  group_by(Ano) %>%
+  summarise(SM = mean(Salário, na.rm = T))
+```
+
+## 1.2 Inflação 
+
+```{r}
+inflacao <- read_xls("série_inflação.xls")
+
+names(inflacao)[] <- c("Data", "Inflação")
+
+inflacao$Ano <- substr(inflacao$Data, 1, 4)
+inflacao$Mes <- substr(inflacao$Data, 6, 7)
+
+inflacao <- inflacao %>% filter(Mes == "01")
+```
+
+## 2.1 Gerando número-índice
+
+```{r}
+inflacao2 = inflacao %>%
+  mutate(n_i = 1+cumsum(Inflação/100),
+         base = 195,
+         sm2 = cumsum(195*n_i))
+
+inflacao
+cumsum(1:10)
+
+172.75 + 172.75*sum(inflacao$Inflação)
+
+write_xlsx(inflacao, "inf.xlsx")
+write_xlsx(sm, "sm.xlsx")
+
+inflacao %>%
+while (inflacao$Ano < "2022"){
+    # statement
+    print(Ano)
+    Ano = paste(Ano, "a", "-") 
+}
+```
+
+```{r}
+library(readr)
+
+url_base <- "https://www.gov.br/anp/pt-br/centrais-de-conteudo/dados-abertos/arquivos/shpc/dsas/ca/ca-2020-01.csv"
+
+a = read_csv(url_base)
+```
+
+
+$$Número_{índice} = $$

@@ -1,0 +1,230 @@
+---
+title: "Dados ANP"
+author: "Grupo de R Economia UFPI"
+date: "2022-10-19"
+output: pdf_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = T)
+
+#install.packages("sidrar")
+
+library(stringr)
+library(sidrar)
+library(tidyverse)
+```
+
+## 1 Importação
+
+```{r echo=TRUE}
+dados_21_02 <- read.csv("ca-2021-02.csv", sep = ";", dec = ",", encoding = "UTF-8")
+dados_22_01 <- read.csv("ca-2022-01.csv", sep = ";", dec = ",", encoding = "UTF-8")
+```
+
+## 2 Consolidar a base
+
+```{r}
+dados_anp <- rbind(dados_21_02, dados_22_01)
+
+gdata::keep(dados_anp, sure = T)
+```
+
+## 3 Dados sidrar
+
+```{r}
+muinicipios <- sidrar::get_sidra(api = "/t/5938/n6/all/v/37/p/last%201/d/v37%200")
+
+muinicipios <- muinicipios %>% select(Valor, `Município`)
+```
+
+## 4 consertando o nome dos municípios
+
+```{r}
+cep <- readRDS("cps.rds")
+```
+```{r}
+dados_anp$Cep <- str_replace_all(dados_anp$Cep, "-", "") #remove o hífen
+```
+```{r}
+dados.com <- merge(dados_anp, cep, by.x = "Cep", by.y = "cep")
+dados.com$Municipio <- paste(dados.com$muni, dados.com$uf, sep=" - ")
+```
+
+## 5 Mesclando informações
+
+```{r}
+dados.com <- dados.com %>% merge(muinicipios, by.x = "Municipio", by.y = "Município", all.x = T)
+```
+
+## 6 Transformando linhas em colunas
+
+```{r}
+dados.com <- dados_anp %>%
+  pivot_wider(
+    names_from = Produto,
+    values_from = Valor.de.Venda
+  )
+
+summary(dados.com)
+```
+
+## EXERCÍCIO
+
+> Realize as operações deste script, adicioando todos os semestres desde de 2020 até 2022.
+
+## 7 Estatística com os dados
+
+```{r}
+dados.com <- dados_anp %>%
+  pivot_wider(
+    names_from = Produto,
+    values_from = Valor.de.Venda
+  )
+
+summary(dados.com)
+
+```
+```{r}
+# SELECIONANDO VARIÁVEIS
+dados.sum <- dados.com %>% select(Municipio, Estado...Sigla, GASOLINA, ETANOL, Bandeira)
+```
+
+```{r}
+dados.sum_gas <- dados.sum %>%
+  filter(Estado...Sigla == "PI") %>%
+  group_by(Municipio) %>%
+  summarise(
+    média = round(mean(GASOLINA, na.rm = T), 2),
+    mediana = median(GASOLINA, na.rm = T),
+    variância = var(GASOLINA, na.rm = T),
+    máximo = max(GASOLINA, na.rm = T),
+    mínimo = min(GASOLINA, na.rm = T),
+    total = sum(GASOLINA, na.rm = T)
+  ) %>% mutate(Marc = "Gasolina")
+  
+kableExtra::kable(dados.sum_gas)
+plot(dados.sum$GASOLINA)
+
+dados.sum_et <- dados.sum %>%
+  #filter(Estado...Sigla == "PI") %>%
+  group_by(Municipio) %>%
+  summarise(
+    média = mean(ETANOL, na.rm = T),
+    mediana = median(ETANOL, na.rm = T),
+    variância = var(ETANOL, na.rm = T),
+    máximo = max(ETANOL, na.rm = T),
+    mínimo = min(ETANOL, na.rm = T),
+    total = sum(ETANOL, na.rm = T)
+  ) %>% mutate(Marc = "Etanol")
+
+dados.sum_et
+  rbind(dados.sum_et, dados.sum_gas)
+```
+
+```{r}
+saveRDS(dados.com,"dados.rds")
+```
+
+
+```{r}
+library(tidyverse)
+library(reshape2)
+```
+
+```{r eval=FALSE, include=FALSE}
+a = data.frame(table(dados.graf$Bandeira))
+
+dados.graf <- dados.com %>% select(Bandeira, Data.da.Coleta, GASOLINA)
+
+dados.graf <- dados.graf %>% filter(Bandeira %in% c("BRANCA", "VIBRA ENERGIA", "IPIRANGA", "RAIZEN", "ALESAT"))
+
+dados.graf <- dados.graf %>%
+  group_by(Bandeira) %>%
+  summarise(pGasolina = mean(GASOLINA, na.rm = T),
+            pGasolina2 = median(GASOLINA, na.rm = T))
+```
+
+```{r eval=FALSE, include=FALSE}
+grafico01 <-
+  dados.graf %>%
+  ggplot(mapping = aes(x = Bandeira, y = pGasolina),
+          position = "dodge") + 
+  geom_bar(stat = 'identity', aes(colour = "Red")) +
+  theme_bw() +
+  labs(
+    title = "Gráfico teste",
+    x = "X", Y = "Y", subtitle = "Período 2º sem de 2021 a 1º sem de 2021"
+  )  
+
+grafico01
+```
+```{r}
+dados.graf2 <- dados.com %>% select(Estado...Sigla, Data.da.Coleta, GASOLINA) 
+
+dados.graf2$Data <- strptime(dados.graf2$Data.da.Coleta, format = "%d/%m/%y") 
+dados.graf2$Mes <- substr(dados.graf2$Data.da.Coleta, 4, 5)
+
+dados.graf2 <- dados.graf2 %>%
+  group_by(Estado...Sigla, Mes) %>%
+    summarise(pGasolina = mean(GASOLINA, na.rm = T),
+            pGasolina2 = median(GASOLINA, na.rm = T))
+
+dados.graf2 <- dados.graf2 %>%
+    pivot_longer(names_to = "Variáel",
+                 values_to = "Preço",
+                 cols = pGasolina:pGasolina2)
+
+
+dados.graf2 <- filter(dados.graf2, Estado...Sigla %in% c("MA", "PI"))
+
+grafico02 <-
+  dados.graf2  %>%
+  ggplot(mapping = aes(x = Mes, y = Preço, color = Variáel),
+         position = "dogde") +
+  geom_line(stat = "identity", group = dados.graf2$Variáel) +
+  theme_bw() +
+  facet_wrap(~ Estado...Sigla, nrow = 5) + 
+  geom_text(aes(label = round(Preço, 1)))
+
+grafico02
+```
+
+
+```{r}
+#install.packages("geobr")
+
+library(geobr)
+library(sidrar)
+```
+
+
+```{r}
+muinicipios <- sidrar::get_sidra(api = "/t/5938/n6/all/v/37/p/last%201/d/v37%200")
+
+muni_space = geobr::read_municipality(year = 2010, showProgress = T)
+
+muni_space$code_muni <- as.character(muni_space$code_muni)
+
+gdata::keep(muinicipios, sure = T)
+
+muinicipios$`Município (Código)`
+
+dados.com <- muinicipios %>% left_join(muni_space, by = c("Município (Código)" = "code_muni"))
+```
+
+
+```{r fig.align='center', fig.height=7, fig.width=7}
+dados.com <- filter(dados.com, abbrev_state == "PI")
+
+mapa <-
+  ggplot() +
+  geom_sf(data = dados.com, aes(geometry = geom, fill = Valor), size = .15) +
+  labs() + 
+  scale_fill_distiller(limits=c(1000,10^6),
+                       name="Faixa IDH")+
+  theme_minimal()
+
+mapa
+  
+```

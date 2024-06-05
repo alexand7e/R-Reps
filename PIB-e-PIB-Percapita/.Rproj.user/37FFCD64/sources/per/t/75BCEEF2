@@ -1,0 +1,27 @@
+{
+    "id": "75BCEEF2",
+    "path": "~/R/R-Reps/PIB-e-PIB-Percapita/pib-percapita-animation.R",
+    "project_path": "pib-percapita-animation.R",
+    "type": "r_source",
+    "hash": "1234770206",
+    "contents": "",
+    "dirty": false,
+    "created": 1717540841180.0,
+    "source_on_save": false,
+    "relative_order": 1,
+    "properties": {
+        "tempName": "Untitled1",
+        "source_window_id": "",
+        "Source": "Source",
+        "cursorPosition": "27,0",
+        "scrollLine": "0"
+    },
+    "folds": "",
+    "lastKnownWriteTime": 1717541476,
+    "encoding": "UTF-8",
+    "collab_server": "",
+    "source_window": "",
+    "last_content_update": 1717541476079,
+    "read_only": false,
+    "read_only_alternatives": []
+}

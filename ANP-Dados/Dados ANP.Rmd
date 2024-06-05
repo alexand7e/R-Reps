@@ -1,0 +1,76 @@
+---
+title: "Dados ANP"
+author: "Grupo de R Economia UFPI"
+date: "2022-10-15"
+output: pdf_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+#setwd("C:\Users\Alexandre\OneDrive\Documentos\R")
+#install.packages("sidrar")
+
+library(tidyverse)
+library(sidrar)
+library(stringr)  
+```
+
+## 1 Importação 
+
+```{r}
+dados_2022_01 = read.csv("ca-2022-01.csv", sep = ";", dec = ",", encoding = "UTF-8")
+dados_2021_02 = read.csv("ca-2021-02.csv", sep = ";", dec = ",", encoding = "UTF-8")
+```
+
+## 2 Consolidação
+
+```{r}
+dados_anp = rbind(dados_2022_01, dados_2021_02)
+```
+
+## 3 Concertando o nome dos municípios
+
+```{r}
+read_rds("cps.rds")
+gdata::keep(pib_m,cps,dados_anp, sure = T)
+```
+
+## Reestruturando a base
+
+```{r}
+dados_anp <- dados_anp %>%
+  pivot_wider(names_from = Produto,
+              values_from = Valor.de.Venda)
+```
+
+## 3 Importação por Sidra 
+
+```{r}
+pib_m = sidrar::get_sidra(api = "/t/5938/n6/all/v/37/p/last%201/d/v37%200") %>% 
+  select(Município, Valor)
+```
+
+## 4 Consolidando base 
+
+```{r}
+dados_anp <- dados_anp %>%
+  mutate(Cep = str_replace_all(Cep, "-", "")) %>%
+  select(Cep, Data.da.Coleta, Bandeira:uf)
+
+dados_anp <- merge(dados_anp, cps, by.x = "Cep", by.y = "cep")
+```
+
+## 5 Adicionando novas variáveis
+
+```{r}
+
+dados_anp <- dados_anp %>%
+  mutate(Municipio = paste(muni, uf, sep = " - "))
+
+dados.com = merge(dados_anp, pib_m, by.x='Municipio', by.y = 'Município')
+
+summary(dados.com)
+```
+
+# TAREFA:
+# REALIZE AS MESMAS OPERAÇÕES AQUI FEITAS, MAS DESTA VEZ INCLUINDO OS SEMESTRES DE 2020 ATÉ 2021 PARA A SÉRIE.

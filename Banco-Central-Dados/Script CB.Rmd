@@ -1,0 +1,178 @@
+---
+title: "Aplicação do Índice de Hirschman-Herfindahl no setor financeiro brasileiro"
+subtitle: "Estudo para os anos de 2017 a 2021"
+author: "Alexandre Barros"
+date: "30 de agosto de 2022"
+output: pdf_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+
+# Instalando dependências
+library(tidyverse)
+library(magrittr)
+library(stringi)
+library(ggrepel)
+```
+
+# Introdução
+
+$$HHI = \sum_{i = 1}^{k}{S_{i}^2} $$
+
+# Base de Dados
+
+# Metodologia
+
+# Resultados
+
+```{r dados}
+# importação dos dados bancários anuais 
+# utiliza-se apenas as colunas: instituição, 
+                                #tipo de instituição; 
+                                #operações de crétito; e 
+                                #ativos totais
+
+#2017
+dados_17 <- read.csv("dados bancários 2017.csv", sep = ";", skip = 1) %>% 
+  select(1,6,17,28) %>% filter(X.5 != "") %>% mutate(Data = "03/2017")
+#2018
+dados_18 <- read.csv("dados bancários 2018.csv", sep = ";", skip = 1) %>% 
+  select(1,6,17,28) %>% filter(X.5 != "") %>% mutate(Data = "03/2018")
+#2019
+dados_19 <- read.csv("dados bancários 2019.csv", sep = ";", skip = 1) %>% 
+  select(1,6,17,28) %>% filter(X.5 != "") %>% mutate(Data = "03/2019")
+#2020
+dados_20 <- read.csv("dados bancários 2020.csv", sep = ";", skip = 1) %>% 
+  select(1,6,17,28) %>% filter(X.5 != "") %>% mutate(Data = "03/2020")
+#2021
+dados_21 <- read.csv("dados bancários 2021.csv", sep = ";", skip = 1) %>% 
+  select(1,6,17,28) %>% filter(X.5 != "") %>% mutate(Data = "03/2021")
+
+# Consolidando todos os dados em um só data.frame
+Dados.com <- bind_rows(dados_17, dados_18, dados_19, dados_20, dados_21)
+
+# alterando o nome das variáveis
+names(Dados.com) <- c("Instituições", 
+                      "Tipo", 
+                      "Operações de Crédito",
+                      "Ativo total", 
+                      "Data")
+# retirando demais objetos (tirando excessos)
+gdata::keep(Dados.com, sure = T)
+```
+
+
+```{r}
+# adicionando marcadores
+Dados.com %<>% mutate( # cria novas variáveis a partir de variáveis existentes
+  `Ativo total` = as.numeric(str_replace_all(`Ativo total`, "\\.", "")),
+  `Operações de Crédito` = as.numeric(str_replace_all(`Operações de Crédito`, "\\.", "")),
+   Classificador = case_when(
+                          Tipo == "b1" ~ "Bancos comerciais",
+                          Tipo == "b2" ~ "Bancos de investimento e câmbio",
+                          Tipo == "b3C" | Tipo == "b3S" ~ "Cooperativas",
+                          Tipo == "b4" ~ "Bancos de desenvolvimento",
+                          TRUE ~ "Outros"
+                        ))
+
+# Resumindo os dados pelos indicadores de referência  
+Dados.com2 <- Dados.com %>% group_by(`Instituições`, Classificador, Data) %>% 
+  summarise(Ativo = sum(`Ativo total`, na.rm = T),
+            Crédito = sum(`Operações de Crédito`, na.rm = T)
+            ) 
+```
+
+## Analisando os dados
+
+```{r}
+# Analise estatística
+
+Dados.sum <- Dados.com %>% 
+  group_by(Classificador, Data) %>% 
+  summarise(
+            `Número de instituições` = n(),
+            `Média de ativos` = mean(`Ativo total`, na.rm = T),
+            `Desvio Padrão` = sd(`Ativo total`, na.rm = T),
+            `Total das operações de crédito` = sum(`Ativo total`, na.rm = T),
+            `Total dos ativos das instituições` = sum(`Operações de Crédito`, na.rm = T), 
+            ) 
+
+```
+
+
+```{r Relação de Concentração 2}
+CR4 <- Dados.com %>% group_by(Classificador, Data) %>% slice(which.max(`Operações de Crédito`), 0:3)
+CR4 %<>% merge(Dados.sum, by = c("Data","Classificador")) %>%
+  mutate(Participação = (`Operações de Crédito`/`Total das operações de crédito`)*100) %>%
+  group_by(Classificador, Data) %>%
+  summarise(CR4 = sum(Participação))
+
+qplot(data = CR4, x = Data, y = CR4, geom="auto") + facet_grid(~ Classificador)
+```
+
+
+```{r}
+CR8 <- Dados.com %>% group_by(Classificador, Data) %>% slice(which.max(`Operações de Crédito`), 0:7)
+CR8 %<>% merge(Dados.sum, by = c("Data","Classificador")) %>%
+  mutate(Participação = (`Operações de Crédito`/`Total das operações de crédito`)*100) %>%
+  group_by(Classificador, Data) %>%
+  summarise(CR8 = sum(Participação))
+
+qplot(data = CR8, x = Data, y = CR8, geom="auto") + facet_grid(~ Classificador)
+```
+
+```{r Índice de Hirschman-Herfindahl}
+Dados.com2 <- Dados.com %>%
+  group_by(Data, Classificador) %>%
+  summarise(HHI_crédito = (`Operações de Crédito`/sum(`Operações de Crédito`, na.rm = T))^2,
+            HHI_ativo = (`Ativo total`/sum(`Ativo total`, na.rm = T))^2)
+```
+
+```{r}
+HHI <- Dados.com2 %>%
+  group_by(Data, Classificador) %>%
+  summarise(Crédito = sum(HHI_crédito, na.rm = T),
+            `Ativo Bancário` = sum(HHI_ativo, na.rm = T))
+```
+
+```{r}
+HHI %<>% pivot_longer(
+  values_to = "Índice",
+  names_to = "Tipo",
+  cols = Crédito:`Ativo Bancário`,
+)
+  
+```
+
+
+```{r}
+test <-
+ggplot(HHI, stat = 'identity', position = "dodge", 
+  aes(x = Data, y = Índice, group = Tipo, label = round(Índice,3), color = Tipo)) +
+  geom_line(alpha = 0.8, stroke = 0, size = 1.1) +
+  geom_point() +
+  geom_label_repel(segment.colour="black", size =3) + 
+  facet_wrap(~Classificador, scales = "free_y") +
+labs(title = "Concentração Bancária - Índice de Hirschman-Herfindahl (HHI)", subtitle = "1º tri de 2017-2021",
+     x = "Período",
+     y = "Pontos HHI") +
+theme_bw() + 
+        theme(#axis.title = element_text(size = 12),
+        axis.title.y = element_text(size = 11.5),                 
+        axis.text.x = element_text(size = 11, color = 'black'),
+        axis.text.y = element_text(size = 11, color = 'black', face = 'bold'),
+        legend.title = element_text(size = 12),
+        legend.position='bottom',
+        legend.text=element_text(size=13),
+        legend.background = element_rect(fill="ghostwhite", size=1),
+        axis.ticks = element_line(colour = "grey70", size = 0.2),
+        panel.grid.major = element_line(colour = "grey70"),
+        panel.grid.minor = element_blank(),
+        panel.grid.major.x = element_blank(),
+        strip.background = element_blank(),
+        strip.text = element_text(face = 'bold')) 
+  
+test
+  ggsave(plot = test, "concentração.png", height = 6.5, width = 10, dpi = 200)
+```

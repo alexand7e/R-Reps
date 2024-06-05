@@ -1,0 +1,402 @@
+---
+title: "Aplicação do Índice de Hirschman-Herfindahl no setor financeiro brasileiro"
+subtitle: "Estudo para os anos de 2017 a 2021"
+author: "Alexandre Barros"
+date: "30 de agosto de 2022"
+output: pdf_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE, warning=FALSE, message=FALSE)
+options(Encoding="UTF-8")
+
+# Instalando dependências
+library(tidyverse)
+library(magrittr)
+library(stringi)
+library(ggrepel)
+library(kableExtra)
+```
+
+# Introdução
+
+O objetivo deste documento é apresentar, metodicamente e em etapas
+explicadas no R, a utilização de dados do setor financeiro brasileiro,
+dispobibilizados pelo Banco Central do Brasil, nos [relatórios do
+IF.Período]]([https://www3.bcb.gov.br/ifPeríodo/#].
+
+Para tanto, além desta breve introdução, o documento se desdobrará,
+sempre explicando os comandos, no método e nos resultados aplicados com
+dados dos primeiros trimestres de 2017 a 2021, a fim de obter
+informações do grau de concentração neste setor.
+
+# Base de Dados
+
+Os dados do portal IF.Período, do BC, disponibilizam informações
+diversas, resumidas e desdobradas, de diversas instituições (cerca de
+1500) e em diversos segmentos do setor financeiro. O primeiro passo
+corresponde a importação desses dados (obtidos em .csv) de maneira
+off-line, após-realizados o download.
+
+No R, utilizamos as funções do pacote Dplyr de importação. Abaixo,
+usa-se a função *read.csv()* para importar do diretório os arquivos.
+
+```{r message=FALSE, warning=FALSE}
+#2017 # 
+dados_17 <- read.csv("dados bancários 2017.csv", sep = ";", skip = 1) %>% 
+  select(1,6,17,28) %>% filter(X.5 != "") %>% mutate(Período = "03/2017") 
+#2018
+dados_18 <- read.csv("dados bancários 2018.csv", sep = ";", skip = 1) %>% 
+  select(1,6,17,28) %>% filter(X.5 != "") %>% mutate(Período = "03/2018")
+#2019
+dados_19 <- read.csv("dados bancários 2019.csv", sep = ";", skip = 1) %>% 
+  select(1,6,17,28) %>% filter(X.5 != "") %>% mutate(Período = "03/2019")
+#2020
+dados_20 <- read.csv("dados bancários 2020.csv", sep = ";", skip = 1) %>% 
+  select(1,6,17,28) %>% filter(X.5 != "") %>% mutate(Período = "03/2020")
+#2021
+dados_21 <- read.csv("dados bancários 2021.csv", sep = ";", skip = 1) %>% 
+  select(1,6,17,28) %>% filter(X.5 != "") %>% mutate(Período = "03/2021")
+```
+
+Além da importação, selecionou-se apenas as colunas ou variáveis: 1)
+nome da instituição, 2) subsetor da instiuição, 3) operações de crédito
+líquidas, e 4) Ativo total das insituições; isto para cada período.
+
+Os comandos abaixos organizam os dados em uma base consolidada para sua
+utilização.
+
+1 - Consolidando todos os dados em um só data.frame.
+
+```{r warning=FALSE}
+Dados.com <- bind_rows(dados_17, dados_18, dados_19, dados_20, dados_21)
+```
+
+2 - Alterando o nome das variáveis.
+
+```{r warning=FALSE}
+names(Dados.com) <- c("Instituições", 
+                      "Tipo", 
+                      "Operações de Crédito",
+                      "Ativo total", 
+                      "Período")
+```
+
+3 - Retirando demais objetos do R (retirando excessos).
+
+```{r warning=FALSE}
+gdata::keep(Dados.com, sure = T)
+```
+
+## Analisando os dados
+
+Agora que consolidamos os dados, para os respectivos períodos, no objeto
+a que chamamos *Dados.com*, podemos analisar preliminarmente estes
+dados.
+
+O próximo passo é será revisar os dados. Ou seja, ocorre que no processo
+de importação, o R nem sempre reconhece o tipo correto de dados. É dever
+nosso completar esses dados. Abaixo o script responsável por aprimorar
+as variáveis existentes, usando a função *mutate()*, que cria novas
+variáveis a partir de variáveis existentes.
+
+Como se pode ver, adicionamos os Subsetores de cada setor de maneira a
+melhor analisar os dados, com o auxílio da função case_when, que usa de
+operações lógicas para identificar corretamente o subsetor da
+instituição.
+
+```{r warning=FALSE}
+Dados.com %<>% mutate( # 
+  `Ativo total` = as.numeric(str_replace_all(`Ativo total`,"\\.", ""))/1000,
+  
+  `Operações de Crédito` = as.numeric(str_replace_all(`Operações de Crédito`, "\\.", ""))/1000,
+  
+   Subsetor = case_when(
+              Tipo == "b1" ~ "Bancos comerciais",
+              Tipo == "b2" ~ "Bancos de investimento\n e câmbio",
+              Tipo == "b3C" | 
+              Tipo == "b3S" ~ "Cooperativas Singulares\n e Confederações",
+              Tipo == "b4" ~ "Bancos\n de desenvolvimento",
+              TRUE ~ "Não bancários\n de crédito e capital"
+                      ))
+```
+
+Ainda no pacote Dplyr, sumarizamos as informações conforme o script
+abaixo e mostramos seu resultado em uma tabela do tipo Kable.
+
+```{r echo=F, warning=FALSE}
+# Analise estatística
+Dados.sum <- Dados.com %>% 
+  group_by(Subsetor, Período) %>% 
+  summarise(
+            `Número de instituições` = n(),
+            
+            `Média de ativos` = round(mean(`Ativo total`, na.rm = T),0),
+            `Desvio Padrão` = round(sd(`Ativo total`, na.rm = T), 0),
+            `Total dos ativos das instituições` = round(sum(`Ativo total`, na.rm = T),0), 
+            
+            `Média de ativos i` = round(mean(`Operações de Crédito`, na.rm = T),0),
+            `Desvio Padrão i` = round(sd(`Operações de Crédito`, na.rm = T), 0),           
+            `Total das operações de crédito` = round(sum(`Operações de Crédito`, na.rm = T),0)
+            ) 
+```
+
+Cada uma das variáveis criadas contêm os valores e infomações
+analisados, neste caso, o total de crédito movimentado pelas
+instituições e seu ativo acumulado. Podemos mostrar esses dados, como
+mencionado, usando um kable, como se vê abaixo.
+
+```{r warning=FALSE}
+knitr::kable(select(Dados.sum, -2), format="latex", booktabs = TRUE) %>% 
+  kable_styling(latex_options="scale_down") %>%
+  add_header_above(c(" ", "Crédito" = 4, "Ativo" = 3)) %>%
+  row_spec(row = 5, hline_after = T) %>%
+  row_spec(row = 10, hline_after = T) %>%
+  row_spec(row = 15, hline_after = T) %>%
+  row_spec(row = 20, hline_after = T) 
+```
+
+# Metodologia
+
+## Relação de Concentração
+
+A Relação de Concentração (CR) mede a parcela de participação de um
+número determinado de firmas no contexto geral da indústria examinada. A
+fórmula abaixo ilustra a aplicação da técnica numa situação em que se
+leva em conta as quatro maiores empresas do setor:
+
+$$CR4 = \sum_{i = 4}^{k}{S_{i}} $$
+
+Aqui, se aplicará a Relação de Concentração para as quatro e oito
+maiores empresas de cada segmento. A tabela abaixo ajuda a compreender
+os resultados.
+
+| **Níveis de Mercado CR** | CR4              | CR8         |
+|--------------------------|----------------|---------------|
+| Altamente Concentrado    | i \> 75%        | i \> 90%       |
+| Alta Concentração        | 65% \< i \< 75%  | 85% \< i \< 90% |
+| Concentração moderada    | 50% \< i \< 65%  | 70% \< i \< 85% |
+| Baixa Concentração       | 35% \< i \< 50%  | 45% \< i \< 70% |
+| Ausência de concentração | i \< 35%        | i \< 45%       |
+| Claramente Atomístico    | i \= 2%         |               |
+
+## Índice de Hirshman-Herfindahl (HHI)
+
+Outra técnica para se medir concentração de mercado é o Índice de
+Herfindahl-Hirschman (HHI), em que são somados os quadrados da parcela de
+participação de cada empresa, levando-se em conta todas as empresas
+conforme ilustra a expressão abaixo:
+
+$$HHI = \sum_{i = 1}^{k}{S_{i}^2} $$
+
+Ao contrário da relação CR, o Índice HHI leva em conta o tamanho
+relativo das empresas ao elevar a parcela de participação de cada uma
+delas ao quadrado. A tabela abaixo ajuda a compreendê-lo:
+
+| **Índice**              | Classificação do mercado  |
+|-------------------------|---------------------------|
+| HHI \< 1000              | Não concentrado           |
+| HHI \> 1000 porém \< 1800 | Moderadamente concentrado |
+| HHI \> 1800              | Altamente concentrado     |
+
+No ambiente do R, vamos utilizar de um mecanismo provido pela
+ferramentas em que fixamos um grupo (isto é, um eixo) e obtemos apenas
+os maiores valores selecionados, nesta caso, as 4 e 8 maiores
+instituições, respectivamente, que atuam em determinado segmento do
+setor financeiro.
+
+Segue-se, sequencialmente, os scripts que realizam esta tarefa tanto
+para as operações de crédito quanto para os ativos detidos pelos bancos.
+Os comandos abaixo têm, em essência, as mesmas funções, sendo estas as
+responsáveis por determinada tarefa nos dados.
+
+-   *group_by()*, responsável por fixar os eixos ou grupos analisados;
+-   *slice_max()*, obtem os maiores valores de cada grupo, recebendo
+    como argumento a variável e quantidade de posições;
+-   *merge()*, mescla bases diferentes com características (ou
+    variáveis) comuns, similar a uma chave primária;
+-   *mutate()*, cria novas variáveis a partir da base selecionada (cf.
+    comando pipe);
+-   *summarise()*, agrega os valores conforme o grupo e operação
+    selecionada, usamos sum() para somar os valores das maiores
+    instituições.
+
+1 - Obtendo a participação das 4 maiores empresas por setor, por
+período, para o total de ativos financeiros.
+
+```{r warning=FALSE}
+CR4_a <- Dados.com %>% 
+  group_by(Subsetor, Período) %>% 
+  slice_max(`Ativo total`, n = 4) %>%   
+  
+  merge(Dados.sum, by = c("Período","Subsetor"), all.x = T) %>%
+  mutate(Participação = (`Ativo total`/`Total dos ativos das instituições`)*100) %>%
+  group_by(Subsetor, Período) %>%
+  summarise(`RC Ativo` = sum(Participação))
+```
+
+2 - Obtendo a participação das 4 maiores empresas por operações de
+créditos realizadas no período.
+
+```{r warning=FALSE}
+CR4_c <- Dados.com %>% 
+  group_by(Subsetor, Período) %>% 
+  slice_max(`Operações de Crédito`, n = 4) %>%   
+  
+  merge(Dados.sum, by = c("Período","Subsetor"), all.x = T) %>%
+  mutate(Participação = (`Operações de Crédito`/
+                         `Total das operações de crédito`)*100) %>%
+  group_by(Subsetor, Período) %>%
+  summarise(`RC Crédito` = sum(Participação)) %>% mutate(Indicador = "CR4")
+
+# juntando as duas bases
+CR4 <- merge(CR4_a, CR4_c, by = c("Período","Subsetor"))
+```
+
+3 - Obtendo a participação das 8 maiores empresas por setor (CR8), por
+período, para o total de ativos financeiros.
+
+```{r warning=FALSE}
+CR8_a <- Dados.com %>% 
+  group_by(Subsetor, Período) %>% 
+  slice_max(`Ativo total`, n = 8) %>%
+  
+  merge(Dados.sum, by = c("Período","Subsetor"), all.x = T) %>%
+  mutate(Participação = (`Ativo total`/
+                         `Total dos ativos das instituições`)*100) %>%
+  group_by(Subsetor, Período) %>%
+  summarise(`RC Ativo` = sum(Participação))
+```
+
+4 - Obtendo a participação das 4 maiores empresas por operações de
+créditos realizadas no período.
+
+```{r warning=FALSE}
+CR8_c <- Dados.com %>% 
+  group_by(Subsetor, Período) %>% 
+  slice_max(`Operações de Crédito`, n = 8) %>%
+  
+  merge(Dados.sum, by = c("Período","Subsetor"), all.x = T) %>%
+  mutate(Participação = (`Operações de Crédito`/
+                         `Total das operações de crédito`)*100) %>%
+  group_by(Subsetor, Período) %>%
+  summarise(`RC Crédito` = sum(Participação)) %>% mutate(Indicador = "CR8")
+
+CR8 <- merge(CR8_a, CR8_c, by = c("Período","Subsetor"))
+```
+
+5 - Consolidando todas as informações em um só data.frame.
+
+```{r warning=FALSE}
+OC <- bind_rows(CR4, CR8)
+
+OC %<>% pivot_longer(cols = `RC Ativo`:`RC Crédito`, 
+                     values_to = "Participação", 
+                     names_to = "CR")
+
+# retirando excessos
+gdata::keep(Dados.com, OC, Dados.sum, sure = T)
+```
+
+Pronto! Consolidamos a base correspondente a relação de concentração.
+Agora é tarefa nossa realizar as operações para obter o Índice
+Hirschman-Herfindahl.
+
+Como mencionado antes, este índice toma como base a participação das
+empresas e as eleva ao quadrado, somando todos os valores da base. Para
+os dados que dispomos, esta operação é similar àquela realizada para a
+relação de concentração, com a diferença da operação matemática e do uso
+de todas as instituições dos segmentos, não apenas os maiores.
+
+Desta forma, realizamos isso em três etapas simples:
+
+1 - Sumarizando os valores para cada empresa por segmento (participação
+individual)[^1].
+
+[^1]: Perceba que aqui nós já aplicamos a exponenciação da participação
+
+```{r warning=FALSE}
+HHI <- Dados.com %>%
+  group_by(Período, Subsetor) %>%
+  summarise(HHI_crédito = (`Operações de Crédito`/
+                            sum(`Operações de Crédito`, na.rm = T)*100)^2,
+            HHI_ativo = (`Ativo total`/
+                         sum(`Ativo total`, na.rm = T)*100)^2)
+```
+
+2 - Agregando os valores por segmento, obtendo o HHI pela função *sum()*
+(somatório).
+
+```{r warning=FALSE}
+HHI %<>%
+  group_by(Período, Subsetor) %>%
+  summarise(Crédito = sum(HHI_crédito, na.rm = T),
+            `Ativo` = sum(HHI_ativo, na.rm = T))
+```
+
+3 - Por último, nós juntamos as variáveis para facilitar a visualização
+no gráfico.
+
+```{r echo=FALSE, warning=FALSE}
+HHI %<>% pivot_longer(
+  values_to = "Índice",
+  names_to = "Tipo",
+  cols = Crédito:`Ativo`,
+)
+```
+
+# Resultados
+
+Para terminar esta 
+
+```{r fig.height=5.5, fig.width=9, message=FALSE, warning=FALSE}
+p <- 
+  filter(OC, Subsetor != "Bancos\n de desenvolvimento") %>%
+  ggplot(aes(x = Período, y = Participação)) +
+  geom_bar(
+    aes(color = Indicador, fill = Indicador),
+    stat = "identity", position = position_dodge(0.8),
+    width = 0.7
+    ) +
+  theme(axis.text.x = element_text(size = 10, 
+                                   color = 'black', 
+                                   angle = 90, 
+                                   vjust = .3))
+
+p <- p + geom_text(
+  aes(label = round(Participação,0), group = Indicador), 
+  position = position_dodge(0.8),
+  vjust = -0.3, size = 3.5
+) 
+
+p + facet_grid(CR~Subsetor) + theme_bw() 
+```
+
+```{r echo=TRUE, fig.height=7, fig.width=9, message=FALSE, warning=FALSE}
+test <-
+ggplot(HHI, stat = 'identity', position = "dodge", 
+  aes(x = Período, y = Índice, group = Tipo, label = round(Índice,0), fill = Tipo)) +
+  geom_line(alpha = 0.8, stroke = 0, size = 1.1) +
+  geom_point() +
+  geom_label(segment.colour="black", size =3.1) + 
+  facet_wrap(~Subsetor, scales = "free_y") +
+labs(title = "Concentração Bancária - Índice de Hirschman-Herfindahl (HHI)", 
+     subtitle = "1º tri de 2017-2021",
+     x = "Período",
+     y = "Pontos HHI") +
+  theme_bw() +
+        theme(axis.title = element_text(size = 12),
+        axis.title.y = element_text(size = 11.5),                 
+        axis.text.x = element_text(size = 10, color = 'black', angle = 90, vjust = .3),
+        axis.text.y = element_text(size = 11, color = 'black', face = 'bold'),
+        legend.title = element_text(size = 12),
+        legend.position= 'bottom' ,
+        legend.text=element_text(size=13),
+        legend.background = element_rect(fill="ghostwhite", size=1),
+        axis.ticks = element_line(colour = "grey70", size = 0.2),
+        panel.grid.major = element_line(colour = "grey70"),
+        strip.text = element_text(face = 'bold')) 
+  
+test
+
+```

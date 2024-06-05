@@ -1,0 +1,669 @@
+% Options for packages loaded elsewhere
+\PassOptionsToPackage{unicode}{hyperref}
+\PassOptionsToPackage{hyphens}{url}
+%
+\documentclass[
+]{article}
+\usepackage{amsmath,amssymb}
+\usepackage{lmodern}
+\usepackage{iftex}
+\ifPDFTeX
+  \usepackage[T1]{fontenc}
+  \usepackage[utf8]{inputenc}
+  \usepackage{textcomp} % provide euro and other symbols
+\else % if luatex or xetex
+  \usepackage{unicode-math}
+  \defaultfontfeatures{Scale=MatchLowercase}
+  \defaultfontfeatures[\rmfamily]{Ligatures=TeX,Scale=1}
+\fi
+% Use upquote if available, for straight quotes in verbatim environments
+\IfFileExists{upquote.sty}{\usepackage{upquote}}{}
+\IfFileExists{microtype.sty}{% use microtype if available
+  \usepackage[]{microtype}
+  \UseMicrotypeSet[protrusion]{basicmath} % disable protrusion for tt fonts
+}{}
+\makeatletter
+\@ifundefined{KOMAClassName}{% if non-KOMA class
+  \IfFileExists{parskip.sty}{%
+    \usepackage{parskip}
+  }{% else
+    \setlength{\parindent}{0pt}
+    \setlength{\parskip}{6pt plus 2pt minus 1pt}}
+}{% if KOMA class
+  \KOMAoptions{parskip=half}}
+\makeatother
+\usepackage{xcolor}
+\usepackage[margin=1in]{geometry}
+\usepackage{color}
+\usepackage{fancyvrb}
+\newcommand{\VerbBar}{|}
+\newcommand{\VERB}{\Verb[commandchars=\\\{\}]}
+\DefineVerbatimEnvironment{Highlighting}{Verbatim}{commandchars=\\\{\}}
+% Add ',fontsize=\small' for more characters per line
+\usepackage{framed}
+\definecolor{shadecolor}{RGB}{248,248,248}
+\newenvironment{Shaded}{\begin{snugshade}}{\end{snugshade}}
+\newcommand{\AlertTok}[1]{\textcolor[rgb]{0.94,0.16,0.16}{#1}}
+\newcommand{\AnnotationTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textbf{\textit{#1}}}}
+\newcommand{\AttributeTok}[1]{\textcolor[rgb]{0.77,0.63,0.00}{#1}}
+\newcommand{\BaseNTok}[1]{\textcolor[rgb]{0.00,0.00,0.81}{#1}}
+\newcommand{\BuiltInTok}[1]{#1}
+\newcommand{\CharTok}[1]{\textcolor[rgb]{0.31,0.60,0.02}{#1}}
+\newcommand{\CommentTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textit{#1}}}
+\newcommand{\CommentVarTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textbf{\textit{#1}}}}
+\newcommand{\ConstantTok}[1]{\textcolor[rgb]{0.00,0.00,0.00}{#1}}
+\newcommand{\ControlFlowTok}[1]{\textcolor[rgb]{0.13,0.29,0.53}{\textbf{#1}}}
+\newcommand{\DataTypeTok}[1]{\textcolor[rgb]{0.13,0.29,0.53}{#1}}
+\newcommand{\DecValTok}[1]{\textcolor[rgb]{0.00,0.00,0.81}{#1}}
+\newcommand{\DocumentationTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textbf{\textit{#1}}}}
+\newcommand{\ErrorTok}[1]{\textcolor[rgb]{0.64,0.00,0.00}{\textbf{#1}}}
+\newcommand{\ExtensionTok}[1]{#1}
+\newcommand{\FloatTok}[1]{\textcolor[rgb]{0.00,0.00,0.81}{#1}}
+\newcommand{\FunctionTok}[1]{\textcolor[rgb]{0.00,0.00,0.00}{#1}}
+\newcommand{\ImportTok}[1]{#1}
+\newcommand{\InformationTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textbf{\textit{#1}}}}
+\newcommand{\KeywordTok}[1]{\textcolor[rgb]{0.13,0.29,0.53}{\textbf{#1}}}
+\newcommand{\NormalTok}[1]{#1}
+\newcommand{\OperatorTok}[1]{\textcolor[rgb]{0.81,0.36,0.00}{\textbf{#1}}}
+\newcommand{\OtherTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{#1}}
+\newcommand{\PreprocessorTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textit{#1}}}
+\newcommand{\RegionMarkerTok}[1]{#1}
+\newcommand{\SpecialCharTok}[1]{\textcolor[rgb]{0.00,0.00,0.00}{#1}}
+\newcommand{\SpecialStringTok}[1]{\textcolor[rgb]{0.31,0.60,0.02}{#1}}
+\newcommand{\StringTok}[1]{\textcolor[rgb]{0.31,0.60,0.02}{#1}}
+\newcommand{\VariableTok}[1]{\textcolor[rgb]{0.00,0.00,0.00}{#1}}
+\newcommand{\VerbatimStringTok}[1]{\textcolor[rgb]{0.31,0.60,0.02}{#1}}
+\newcommand{\WarningTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textbf{\textit{#1}}}}
+\usepackage{longtable,booktabs,array}
+\usepackage{calc} % for calculating minipage widths
+% Correct order of tables after \paragraph or \subparagraph
+\usepackage{etoolbox}
+\makeatletter
+\patchcmd\longtable{\par}{\if@noskipsec\mbox{}\fi\par}{}{}
+\makeatother
+% Allow footnotes in longtable head/foot
+\IfFileExists{footnotehyper.sty}{\usepackage{footnotehyper}}{\usepackage{footnote}}
+\makesavenoteenv{longtable}
+\usepackage{graphicx}
+\makeatletter
+\def\maxwidth{\ifdim\Gin@nat@width>\linewidth\linewidth\else\Gin@nat@width\fi}
+\def\maxheight{\ifdim\Gin@nat@height>\textheight\textheight\else\Gin@nat@height\fi}
+\makeatother
+% Scale images if necessary, so that they will not overflow the page
+% margins by default, and it is still possible to overwrite the defaults
+% using explicit options in \includegraphics[width, height, ...]{}
+\setkeys{Gin}{width=\maxwidth,height=\maxheight,keepaspectratio}
+% Set default figure placement to htbp
+\makeatletter
+\def\fps@figure{htbp}
+\makeatother
+\setlength{\emergencystretch}{3em} % prevent overfull lines
+\providecommand{\tightlist}{%
+  \setlength{\itemsep}{0pt}\setlength{\parskip}{0pt}}
+\setcounter{secnumdepth}{-\maxdimen} % remove section numbering
+\usepackage{booktabs}
+\usepackage{longtable}
+\usepackage{array}
+\usepackage{multirow}
+\usepackage{wrapfig}
+\usepackage{float}
+\usepackage{colortbl}
+\usepackage{pdflscape}
+\usepackage{tabu}
+\usepackage{threeparttable}
+\usepackage{threeparttablex}
+\usepackage[normalem]{ulem}
+\usepackage{makecell}
+\usepackage{xcolor}
+\ifLuaTeX
+  \usepackage{selnolig}  % disable illegal ligatures
+\fi
+\IfFileExists{bookmark.sty}{\usepackage{bookmark}}{\usepackage{hyperref}}
+\IfFileExists{xurl.sty}{\usepackage{xurl}}{} % add URL line breaks if available
+\urlstyle{same} % disable monospaced font for URLs
+\hypersetup{
+  pdftitle={Aplicação do Índice de Hirschman-Herfindahl no setor financeiro brasileiro},
+  pdfauthor={Alexandre Barros},
+  hidelinks,
+  pdfcreator={LaTeX via pandoc}}
+
+\title{Aplicação do Índice de Hirschman-Herfindahl no setor financeiro
+brasileiro}
+\usepackage{etoolbox}
+\makeatletter
+\providecommand{\subtitle}[1]{% add subtitle to \maketitle
+  \apptocmd{\@title}{\par {\large #1 \par}}{}{}
+}
+\makeatother
+\subtitle{Estudo para os anos de 2017 a 2021}
+\author{Alexandre Barros}
+\date{30 de agosto de 2022}
+
+\begin{document}
+\maketitle
+
+\hypertarget{introduuxe7uxe3o}{%
+\section{Introdução}\label{introduuxe7uxe3o}}
+
+O objetivo deste documento é apresentar, metodicamente e em etapas
+explicadas no R, a utilização de dados do setor financeiro brasileiro,
+dispobibilizados pelo Banco Central do Brasil, nos {[}relatórios do
+IF.Período{]}{]}(\url{https://www3.bcb.gov.br/ifPeríodo/\#}).
+
+Para tanto, além desta breve introdução, o documento se desdobrará,
+sempre explicando os comandos, no método e nos resultados aplicados com
+dados dos primeiros trimestres de 2017 a 2021, a fim de obter
+informações do grau de concentração neste setor.
+
+\hypertarget{base-de-dados}{%
+\section{Base de Dados}\label{base-de-dados}}
+
+Os dados do portal IF.Período, do BC, disponibilizam informações
+diversas, resumidas e desdobradas, de diversas instituições (cerca de
+1500) e em diversos segmentos do setor financeiro. O primeiro passo
+corresponde a importação desses dados (obtidos em .csv) de maneira
+off-line, após-realizados o download.
+
+No R, utilizamos as funções do pacote Dplyr de importação. Abaixo,
+usa-se a função \emph{read.csv()} para importar do diretório os
+arquivos.
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{\#2017 \# }
+\NormalTok{dados\_17 }\OtherTok{\textless{}{-}} \FunctionTok{read.csv}\NormalTok{(}\StringTok{"dados bancários 2017.csv"}\NormalTok{, }\AttributeTok{sep =} \StringTok{";"}\NormalTok{, }\AttributeTok{skip =} \DecValTok{1}\NormalTok{) }\SpecialCharTok{\%\textgreater{}\%} 
+  \FunctionTok{select}\NormalTok{(}\DecValTok{1}\NormalTok{,}\DecValTok{6}\NormalTok{,}\DecValTok{17}\NormalTok{,}\DecValTok{28}\NormalTok{) }\SpecialCharTok{\%\textgreater{}\%} \FunctionTok{filter}\NormalTok{(X}\FloatTok{.5} \SpecialCharTok{!=} \StringTok{""}\NormalTok{) }\SpecialCharTok{\%\textgreater{}\%} \FunctionTok{mutate}\NormalTok{(Período }\OtherTok{=} \StringTok{"03/2017"}\NormalTok{) }
+\CommentTok{\#2018}
+\NormalTok{dados\_18 }\OtherTok{\textless{}{-}} \FunctionTok{read.csv}\NormalTok{(}\StringTok{"dados bancários 2018.csv"}\NormalTok{, }\AttributeTok{sep =} \StringTok{";"}\NormalTok{, }\AttributeTok{skip =} \DecValTok{1}\NormalTok{) }\SpecialCharTok{\%\textgreater{}\%} 
+  \FunctionTok{select}\NormalTok{(}\DecValTok{1}\NormalTok{,}\DecValTok{6}\NormalTok{,}\DecValTok{17}\NormalTok{,}\DecValTok{28}\NormalTok{) }\SpecialCharTok{\%\textgreater{}\%} \FunctionTok{filter}\NormalTok{(X}\FloatTok{.5} \SpecialCharTok{!=} \StringTok{""}\NormalTok{) }\SpecialCharTok{\%\textgreater{}\%} \FunctionTok{mutate}\NormalTok{(Período }\OtherTok{=} \StringTok{"03/2018"}\NormalTok{)}
+\CommentTok{\#2019}
+\NormalTok{dados\_19 }\OtherTok{\textless{}{-}} \FunctionTok{read.csv}\NormalTok{(}\StringTok{"dados bancários 2019.csv"}\NormalTok{, }\AttributeTok{sep =} \StringTok{";"}\NormalTok{, }\AttributeTok{skip =} \DecValTok{1}\NormalTok{) }\SpecialCharTok{\%\textgreater{}\%} 
+  \FunctionTok{select}\NormalTok{(}\DecValTok{1}\NormalTok{,}\DecValTok{6}\NormalTok{,}\DecValTok{17}\NormalTok{,}\DecValTok{28}\NormalTok{) }\SpecialCharTok{\%\textgreater{}\%} \FunctionTok{filter}\NormalTok{(X}\FloatTok{.5} \SpecialCharTok{!=} \StringTok{""}\NormalTok{) }\SpecialCharTok{\%\textgreater{}\%} \FunctionTok{mutate}\NormalTok{(Período }\OtherTok{=} \StringTok{"03/2019"}\NormalTok{)}
+\CommentTok{\#2020}
+\NormalTok{dados\_20 }\OtherTok{\textless{}{-}} \FunctionTok{read.csv}\NormalTok{(}\StringTok{"dados bancários 2020.csv"}\NormalTok{, }\AttributeTok{sep =} \StringTok{";"}\NormalTok{, }\AttributeTok{skip =} \DecValTok{1}\NormalTok{) }\SpecialCharTok{\%\textgreater{}\%} 
+  \FunctionTok{select}\NormalTok{(}\DecValTok{1}\NormalTok{,}\DecValTok{6}\NormalTok{,}\DecValTok{17}\NormalTok{,}\DecValTok{28}\NormalTok{) }\SpecialCharTok{\%\textgreater{}\%} \FunctionTok{filter}\NormalTok{(X}\FloatTok{.5} \SpecialCharTok{!=} \StringTok{""}\NormalTok{) }\SpecialCharTok{\%\textgreater{}\%} \FunctionTok{mutate}\NormalTok{(Período }\OtherTok{=} \StringTok{"03/2020"}\NormalTok{)}
+\CommentTok{\#2021}
+\NormalTok{dados\_21 }\OtherTok{\textless{}{-}} \FunctionTok{read.csv}\NormalTok{(}\StringTok{"dados bancários 2021.csv"}\NormalTok{, }\AttributeTok{sep =} \StringTok{";"}\NormalTok{, }\AttributeTok{skip =} \DecValTok{1}\NormalTok{) }\SpecialCharTok{\%\textgreater{}\%} 
+  \FunctionTok{select}\NormalTok{(}\DecValTok{1}\NormalTok{,}\DecValTok{6}\NormalTok{,}\DecValTok{17}\NormalTok{,}\DecValTok{28}\NormalTok{) }\SpecialCharTok{\%\textgreater{}\%} \FunctionTok{filter}\NormalTok{(X}\FloatTok{.5} \SpecialCharTok{!=} \StringTok{""}\NormalTok{) }\SpecialCharTok{\%\textgreater{}\%} \FunctionTok{mutate}\NormalTok{(Período }\OtherTok{=} \StringTok{"03/2021"}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+Além da importação, selecionou-se apenas as colunas ou variáveis: 1)
+nome da instituição, 2) subsetor da instiuição, 3) operações de crédito
+líquidas, e 4) Ativo total das insituições; isto para cada período.
+
+Os comandos abaixos organizam os dados em uma base consolidada para sua
+utilização.
+
+1 - Consolidando todos os dados em um só data.frame.
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{Dados.com }\OtherTok{\textless{}{-}} \FunctionTok{bind\_rows}\NormalTok{(dados\_17, dados\_18, dados\_19, dados\_20, dados\_21)}
+\end{Highlighting}
+\end{Shaded}
+
+2 - Alterando o nome das variáveis.
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\FunctionTok{names}\NormalTok{(Dados.com) }\OtherTok{\textless{}{-}} \FunctionTok{c}\NormalTok{(}\StringTok{"Instituições"}\NormalTok{, }
+                      \StringTok{"Tipo"}\NormalTok{, }
+                      \StringTok{"Operações de Crédito"}\NormalTok{,}
+                      \StringTok{"Ativo total"}\NormalTok{, }
+                      \StringTok{"Período"}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+3 - Retirando demais objetos do R (retirando excessos).
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{gdata}\SpecialCharTok{::}\FunctionTok{keep}\NormalTok{(Dados.com, }\AttributeTok{sure =}\NormalTok{ T)}
+\end{Highlighting}
+\end{Shaded}
+
+\hypertarget{analisando-os-dados}{%
+\subsection{Analisando os dados}\label{analisando-os-dados}}
+
+Agora que consolidamos os dados, para os respectivos períodos, no objeto
+a que chamamos \emph{Dados.com}, podemos analisar preliminarmente estes
+dados.
+
+O próximo passo é será revisar os dados. Ou seja, ocorre que no processo
+de importação, o R nem sempre reconhece o tipo correto de dados. É dever
+nosso completar esses dados. Abaixo o script responsável por aprimorar
+as variáveis existentes, usando a função \emph{mutate()}, que cria novas
+variáveis a partir de variáveis existentes.
+
+Como se pode ver, adicionamos os Subsetores de cada setor de maneira a
+melhor analisar os dados, com o auxílio da função case\_when, que usa de
+operações lógicas para identificar corretamente o subsetor da
+instituição.
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{Dados.com }\SpecialCharTok{\%\textless{}\textgreater{}\%} \FunctionTok{mutate}\NormalTok{( }\CommentTok{\# }
+  \StringTok{\textasciigrave{}}\AttributeTok{Ativo total}\StringTok{\textasciigrave{}} \OtherTok{=} 
+    \FunctionTok{as.numeric}\NormalTok{(}\FunctionTok{str\_replace\_all}\NormalTok{(}\StringTok{\textasciigrave{}}\AttributeTok{Ativo total}\StringTok{\textasciigrave{}}\NormalTok{,}\StringTok{"}\SpecialCharTok{\textbackslash{}\textbackslash{}}\StringTok{."}\NormalTok{, }\StringTok{""}\NormalTok{))}\SpecialCharTok{/}\DecValTok{1000}\NormalTok{,}
+  
+  \StringTok{\textasciigrave{}}\AttributeTok{Operações de Crédito}\StringTok{\textasciigrave{}} \OtherTok{=} 
+    \FunctionTok{as.numeric}\NormalTok{(}\FunctionTok{str\_replace\_all}\NormalTok{(}\StringTok{\textasciigrave{}}\AttributeTok{Operações de Crédito}\StringTok{\textasciigrave{}}\NormalTok{, }\StringTok{"}\SpecialCharTok{\textbackslash{}\textbackslash{}}\StringTok{."}\NormalTok{, }\StringTok{""}\NormalTok{))}\SpecialCharTok{/}\DecValTok{1000}\NormalTok{,}
+  
+   \AttributeTok{Subsetor =} \FunctionTok{case\_when}\NormalTok{(}
+\NormalTok{              Tipo }\SpecialCharTok{==} \StringTok{"b1"} \SpecialCharTok{\textasciitilde{}} \StringTok{"Bancos comerciais"}\NormalTok{,}
+\NormalTok{              Tipo }\SpecialCharTok{==} \StringTok{"b2"} \SpecialCharTok{\textasciitilde{}} \StringTok{"Bancos de investimento}\SpecialCharTok{\textbackslash{}n}\StringTok{ e câmbio"}\NormalTok{,}
+\NormalTok{              Tipo }\SpecialCharTok{==} \StringTok{"b3C"} \SpecialCharTok{|} 
+\NormalTok{              Tipo }\SpecialCharTok{==} \StringTok{"b3S"} \SpecialCharTok{\textasciitilde{}} \StringTok{"Cooperativas Singulares}\SpecialCharTok{\textbackslash{}n}\StringTok{ e Confederações"}\NormalTok{,}
+\NormalTok{              Tipo }\SpecialCharTok{==} \StringTok{"b4"} \SpecialCharTok{\textasciitilde{}} \StringTok{"Bancos}\SpecialCharTok{\textbackslash{}n}\StringTok{ de desenvolvimento"}\NormalTok{,}
+              \ConstantTok{TRUE} \SpecialCharTok{\textasciitilde{}} \StringTok{"Não bancários}\SpecialCharTok{\textbackslash{}n}\StringTok{ de crédito e capital"}
+\NormalTok{                      ))}
+\end{Highlighting}
+\end{Shaded}
+
+Ainda no pacote Dplyr, sumarizamos as informações conforme o script
+abaixo e mostramos seu resultado em uma tabela do tipo Kable.
+
+\begin{verbatim}
+## `summarise()` has grouped output by 'Subsetor'. You can override using the
+## `.groups` argument.
+\end{verbatim}
+
+Cada uma das variáveis criadas contêm os valores e infomações
+analisados, neste caso, o total de crédito movimentado pelas
+instituições e seu ativo acumulado. Podemos mostrar esses dados, como
+mencionado, usando um kable, como se vê abaixo.
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{knitr}\SpecialCharTok{::}\FunctionTok{kable}\NormalTok{(}\FunctionTok{select}\NormalTok{(Dados.sum, }\SpecialCharTok{{-}}\DecValTok{2}\NormalTok{), }\AttributeTok{format=}\StringTok{"latex"}\NormalTok{, }\AttributeTok{booktabs =} \ConstantTok{TRUE}\NormalTok{) }\SpecialCharTok{\%\textgreater{}\%} 
+  \FunctionTok{kable\_styling}\NormalTok{(}\AttributeTok{latex\_options=}\StringTok{"scale\_down"}\NormalTok{) }\SpecialCharTok{\%\textgreater{}\%}
+  \FunctionTok{add\_header\_above}\NormalTok{(}\FunctionTok{c}\NormalTok{(}\StringTok{" "}\NormalTok{, }\StringTok{"Crédito"} \OtherTok{=} \DecValTok{3}\NormalTok{, }\StringTok{"Ativo"} \OtherTok{=} \DecValTok{3}\NormalTok{)) }
+\end{Highlighting}
+\end{Shaded}
+
+\begin{table}
+\centering
+\resizebox{\linewidth}{!}{
+\begin{tabular}{lrrrrrrr}
+\toprule
+\multicolumn{1}{c}{ } & \multicolumn{3}{c}{Crédito} & \multicolumn{3}{c}{Ativo} \\
+\cmidrule(l{3pt}r{3pt}){2-4} \cmidrule(l{3pt}r{3pt}){5-7}
+Subsetor & Número de instituições & Média de ativos & Desvio Padrão & Total dos ativos das instituições & Média de ativos  & Desvio Padrão  & Total das operações de crédito\\
+\midrule
+Bancos comerciais & 121 & 58930.5293 & 227646.2729 & 7130594.0 & 17154.48608 & 81475.1343 & 2075692.82\\
+Bancos comerciais & 121 & 58444.0807 & 223699.4890 & 7071733.8 & 16857.67724 & 79820.3831 & 2039778.95\\
+Bancos comerciais & 120 & 62584.5057 & 234742.8157 & 7510140.7 & 17480.89597 & 80042.5492 & 2097707.52\\
+Bancos comerciais & 118 & 71688.6397 & 258908.6862 & 8459259.5 & 19228.93591 & 84359.0386 & 2269014.44\\
+Bancos comerciais & 122 & 76856.2564 & 276577.0460 & 9376463.3 & 22371.07794 & 95243.7314 & 2729271.51\\
+\addlinespace
+Bancos de investimento
+ e câmbio & 49 & 6099.7934 & 14953.8691 & 298889.9 & 2057.51961 & 3684.9182 & 100818.46\\
+Bancos de investimento
+ e câmbio & 47 & 6287.2402 & 14600.7006 & 295500.3 & 2259.36345 & 3901.2679 & 106190.08\\
+Bancos de investimento
+ e câmbio & 49 & 6409.4601 & 14316.2413 & 314063.5 & 2513.73073 & 4498.6350 & 123172.81\\
+Bancos de investimento
+ e câmbio & 50 & 7609.7054 & 16950.2313 & 380485.3 & 2974.40478 & 5382.8850 & 148720.24\\
+Bancos de investimento
+ e câmbio & 50 & 7501.1364 & 18408.2504 & 375056.8 & 2872.49282 & 5689.2304 & 143624.64\\
+\addlinespace
+Bancos
+ de desenvolvimento & 4 & 222844.3417 & 428854.9195 & 891377.4 & 84648.26225 & 156240.4318 & 338593.05\\
+Bancos
+ de desenvolvimento & 4 & 220123.2657 & 423484.2391 & 880493.1 & 76407.34975 & 139933.8657 & 305629.40\\
+Bancos
+ de desenvolvimento & 4 & 218613.4378 & 420671.5729 & 874453.8 & 72797.95600 & 133418.3690 & 291191.82\\
+Bancos
+ de desenvolvimento & 4 & 191153.0200 & 366384.5756 & 764612.1 & 66662.08700 & 121633.8340 & 266648.35\\
+Bancos
+ de desenvolvimento & 4 & 200127.8682 & 382916.9837 & 800511.5 & 68933.38025 & 125228.9071 & 275733.52\\
+\addlinespace
+Cooperativas Singulares
+ e Confederações & 1041 & 224.2726 & 653.5361 & 232570.7 & 76.49042 & 172.6136 & 79320.56\\
+Cooperativas Singulares
+ e Confederações & 1002 & 263.3706 & 722.4167 & 263634.0 & 92.57099 & 200.4928 & 92663.56\\
+Cooperativas Singulares
+ e Confederações & 946 & 318.4973 & 788.8557 & 300661.5 & 123.08610 & 257.8310 & 116193.28\\
+Cooperativas Singulares
+ e Confederações & 900 & 378.1611 & 828.6549 & 339588.7 & 162.43990 & 331.2519 & 145871.03\\
+Cooperativas Singulares
+ e Confederações & 875 & 525.4639 & 1103.6114 & 457153.6 & 233.88032 & 468.3193 & 203475.88\\
+\addlinespace
+Não bancários
+ de crédito e capital & 384 & 1477.2030 & 10223.2066 & 561337.2 & 224.20178 & 2011.9586 & 85196.68\\
+Não bancários
+ de crédito e capital & 375 & 1494.4653 & 7523.9598 & 557435.5 & 253.56360 & 2341.0042 & 94579.22\\
+Não bancários
+ de crédito e capital & 375 & 1538.1929 & 7311.8353 & 570669.6 & 284.14846 & 2671.1375 & 105419.08\\
+Não bancários
+ de crédito e capital & 384 & 1547.3302 & 7122.8476 & 589532.8 & 310.38381 & 2945.1893 & 118256.23\\
+Não bancários
+ de crédito e capital & 414 & 1576.9031 & 7262.1632 & 635491.9 & 209.05560 & 2251.0614 & 84249.41\\
+\bottomrule
+\end{tabular}}
+\end{table}
+
+\hypertarget{metodologia}{%
+\section{Metodologia}\label{metodologia}}
+
+\hypertarget{relauxe7uxe3o-de-concentrauxe7uxe3o}{%
+\subsection{Relação de
+Concentração}\label{relauxe7uxe3o-de-concentrauxe7uxe3o}}
+
+A Relação de Concentração (CR) mede a parcela de participação de um
+número determinado de firmas no contexto geral da indústria examinada. A
+fórmula abaixo ilustra a aplicação da técnica numa situação em que se
+leva em conta as quatro maiores empresas do setor:
+
+\[CR4 = \sum_{i = 4}^{k}{S_{i}} \]
+
+Aqui, se aplicará a Relação de Concentração para as quatro e oito
+maiores empresas de cada segmento. A tabela abaixo ajuda a compreender
+os resultados.
+
+\begin{longtable}[]{@{}lll@{}}
+\toprule()
+\textbf{Níveis de Mercado CR} & CR4 & CR8 \\
+\midrule()
+\endhead
+Altamente Concentrado & i \textgreater{} 75\% & i \textgreater{} 90\% \\
+Alta Concentração & 65\% \textless{} i \textless{} 75\% & 85\%
+\textless{} i \textless{} 90\% \\
+Concentração moderada & 50\% \textless{} i \textless{} 65\% & 70\%
+\textless{} i \textless{} 85\% \\
+Baixa Concentração & 35\% \textless{} i \textless{} 50\% & 45\%
+\textless{} i \textless{} 70\% \\
+Ausência de concentração & i \textless{} 35\% & i \textless{} 45\% \\
+Claramente Atomístico & i = 2\% & \\
+\bottomrule()
+\end{longtable}
+
+\hypertarget{uxedndice-de-hirshman-herfindahl-hhi}{%
+\subsection{Índice de Hirshman-Herfindahl
+(HHI)}\label{uxedndice-de-hirshman-herfindahl-hhi}}
+
+Outra técnica para se medir concentração de mercado é o Índice de
+HerfindahlHirschman (HHI), em que são somados os quadrados da parcela de
+participação de cada empresa, levando-se em conta todas as empresas
+conforme ilustra a expressão abaixo:
+
+\[HHI = \sum_{i = 1}^{k}{S_{i}^2} \]
+
+Ao contrário da relação CR, o Índice HHI leva em conta o tamanho
+relativo das empresas ao elevar a parcela de participação de cada uma
+delas ao quadrado. A tabela abaixo ajuda a compreendê-lo:
+
+\begin{longtable}[]{@{}ll@{}}
+\toprule()
+Índice & Classificação do mercado \\
+\midrule()
+\endhead
+HHI \textless{} 1000 & Não concentrado \\
+HHI \textgreater{} 1000 porém \textless{} 1800 & Moderadamente
+concentrado \\
+HHI \textgreater{} 1800 & Altamente concentrado \\
+\bottomrule()
+\end{longtable}
+
+No ambiente do R, vamos utilizar de um mecanismo provido pela
+ferramentas em que fixamos um grupo (isto é, um eixo) e obtemos apenas
+os maiores valores selecionados, nesta caso, as 4 e 8 maiores
+instituições, respectivamente, que atuam em determinado segmento do
+setor financeiro.
+
+Segue-se, sequencialmente, os scripts que realizam esta tarefa tanto
+para as operações de crédito quanto para os ativos detidos pelos bancos.
+Os comandos abaixo têm, em essência, as mesmas funções, sendo estas as
+responsáveis por determinada tarefa nos dados.
+
+\begin{itemize}
+\tightlist
+\item
+  \emph{group\_by()}, responsável por fixar os eixos ou grupos
+  analisados;
+\item
+  \emph{slice\_max()}, obtem os maiores valores de cada grupo, recebendo
+  como argumento a variável e quantidade de posições;
+\item
+  \emph{merge()}, mescla bases diferentes com características (ou
+  variáveis) comuns, similar a uma chave primária;
+\item
+  \emph{mutate()}, cria novas variáveis a partir da base selecionada
+  (cf. comando pipe);
+\item
+  \emph{summarise()}, agrega os valores conforme o grupo e operação
+  selecionada, usamos sum() para somar os valores das maiores
+  instituições.
+\end{itemize}
+
+1 - Obtendo a participação das 4 maiores empresas por setor, por
+período, para o total de ativos financeiros.
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{CR4\_a }\OtherTok{\textless{}{-}}\NormalTok{ Dados.com }\SpecialCharTok{\%\textgreater{}\%} 
+  \FunctionTok{group\_by}\NormalTok{(Subsetor, Período) }\SpecialCharTok{\%\textgreater{}\%} 
+  \FunctionTok{slice\_max}\NormalTok{(}\StringTok{\textasciigrave{}}\AttributeTok{Ativo total}\StringTok{\textasciigrave{}}\NormalTok{, }\AttributeTok{n =} \DecValTok{4}\NormalTok{) }\SpecialCharTok{\%\textgreater{}\%}   
+  
+  \FunctionTok{merge}\NormalTok{(Dados.sum, }\AttributeTok{by =} \FunctionTok{c}\NormalTok{(}\StringTok{"Período"}\NormalTok{,}\StringTok{"Subsetor"}\NormalTok{), }\AttributeTok{all.x =}\NormalTok{ T) }\SpecialCharTok{\%\textgreater{}\%}
+  \FunctionTok{mutate}\NormalTok{(Participação }\OtherTok{=}\NormalTok{ (}\StringTok{\textasciigrave{}}\AttributeTok{Ativo total}\StringTok{\textasciigrave{}}\SpecialCharTok{/}\StringTok{\textasciigrave{}}\AttributeTok{Total dos ativos das instituições}\StringTok{\textasciigrave{}}\NormalTok{)}\SpecialCharTok{*}\DecValTok{100}\NormalTok{) }\SpecialCharTok{\%\textgreater{}\%}
+  \FunctionTok{group\_by}\NormalTok{(Subsetor, Período) }\SpecialCharTok{\%\textgreater{}\%}
+  \FunctionTok{summarise}\NormalTok{(}\StringTok{\textasciigrave{}}\AttributeTok{RC Ativo}\StringTok{\textasciigrave{}} \OtherTok{=} \FunctionTok{sum}\NormalTok{(Participação))}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## `summarise()` has grouped output by 'Subsetor'. You can override using the
+## `.groups` argument.
+\end{verbatim}
+
+2 - Obtendo a participação das 4 maiores empresas por operações de
+créditos realizadas no período.
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{CR4\_c }\OtherTok{\textless{}{-}}\NormalTok{ Dados.com }\SpecialCharTok{\%\textgreater{}\%} 
+  \FunctionTok{group\_by}\NormalTok{(Subsetor, Período) }\SpecialCharTok{\%\textgreater{}\%} 
+  \FunctionTok{slice\_max}\NormalTok{(}\StringTok{\textasciigrave{}}\AttributeTok{Operações de Crédito}\StringTok{\textasciigrave{}}\NormalTok{, }\AttributeTok{n =} \DecValTok{4}\NormalTok{) }\SpecialCharTok{\%\textgreater{}\%}   
+  
+  \FunctionTok{merge}\NormalTok{(Dados.sum, }\AttributeTok{by =} \FunctionTok{c}\NormalTok{(}\StringTok{"Período"}\NormalTok{,}\StringTok{"Subsetor"}\NormalTok{), }\AttributeTok{all.x =}\NormalTok{ T) }\SpecialCharTok{\%\textgreater{}\%}
+  \FunctionTok{mutate}\NormalTok{(Participação }\OtherTok{=}\NormalTok{ (}\StringTok{\textasciigrave{}}\AttributeTok{Operações de Crédito}\StringTok{\textasciigrave{}}\SpecialCharTok{/}
+                         \StringTok{\textasciigrave{}}\AttributeTok{Total das operações de crédito}\StringTok{\textasciigrave{}}\NormalTok{)}\SpecialCharTok{*}\DecValTok{100}\NormalTok{) }\SpecialCharTok{\%\textgreater{}\%}
+  \FunctionTok{group\_by}\NormalTok{(Subsetor, Período) }\SpecialCharTok{\%\textgreater{}\%}
+  \FunctionTok{summarise}\NormalTok{(}\StringTok{\textasciigrave{}}\AttributeTok{RC Crédito}\StringTok{\textasciigrave{}} \OtherTok{=} \FunctionTok{sum}\NormalTok{(Participação)) }\SpecialCharTok{\%\textgreater{}\%} \FunctionTok{mutate}\NormalTok{(}\AttributeTok{Indicador =} \StringTok{"CR4"}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## `summarise()` has grouped output by 'Subsetor'. You can override using the
+## `.groups` argument.
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{\# juntando as duas bases}
+\NormalTok{CR4 }\OtherTok{\textless{}{-}} \FunctionTok{merge}\NormalTok{(CR4\_a, CR4\_c, }\AttributeTok{by =} \FunctionTok{c}\NormalTok{(}\StringTok{"Período"}\NormalTok{,}\StringTok{"Subsetor"}\NormalTok{))}
+\end{Highlighting}
+\end{Shaded}
+
+3 - Obtendo a participação das 8 maiores empresas por setor (CR8), por
+período, para o total de ativos financeiros.
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{CR8\_a }\OtherTok{\textless{}{-}}\NormalTok{ Dados.com }\SpecialCharTok{\%\textgreater{}\%} 
+  \FunctionTok{group\_by}\NormalTok{(Subsetor, Período) }\SpecialCharTok{\%\textgreater{}\%} 
+  \FunctionTok{slice\_max}\NormalTok{(}\StringTok{\textasciigrave{}}\AttributeTok{Ativo total}\StringTok{\textasciigrave{}}\NormalTok{, }\AttributeTok{n =} \DecValTok{8}\NormalTok{) }\SpecialCharTok{\%\textgreater{}\%}
+  
+  \FunctionTok{merge}\NormalTok{(Dados.sum, }\AttributeTok{by =} \FunctionTok{c}\NormalTok{(}\StringTok{"Período"}\NormalTok{,}\StringTok{"Subsetor"}\NormalTok{), }\AttributeTok{all.x =}\NormalTok{ T) }\SpecialCharTok{\%\textgreater{}\%}
+  \FunctionTok{mutate}\NormalTok{(Participação }\OtherTok{=}\NormalTok{ (}\StringTok{\textasciigrave{}}\AttributeTok{Ativo total}\StringTok{\textasciigrave{}}\SpecialCharTok{/}
+                         \StringTok{\textasciigrave{}}\AttributeTok{Total dos ativos das instituições}\StringTok{\textasciigrave{}}\NormalTok{)}\SpecialCharTok{*}\DecValTok{100}\NormalTok{) }\SpecialCharTok{\%\textgreater{}\%}
+  \FunctionTok{group\_by}\NormalTok{(Subsetor, Período) }\SpecialCharTok{\%\textgreater{}\%}
+  \FunctionTok{summarise}\NormalTok{(}\StringTok{\textasciigrave{}}\AttributeTok{RC Ativo}\StringTok{\textasciigrave{}} \OtherTok{=} \FunctionTok{sum}\NormalTok{(Participação))}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## `summarise()` has grouped output by 'Subsetor'. You can override using the
+## `.groups` argument.
+\end{verbatim}
+
+4 - Obtendo a participação das 4 maiores empresas por operações de
+créditos realizadas no período.
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{CR8\_c }\OtherTok{\textless{}{-}}\NormalTok{ Dados.com }\SpecialCharTok{\%\textgreater{}\%} 
+  \FunctionTok{group\_by}\NormalTok{(Subsetor, Período) }\SpecialCharTok{\%\textgreater{}\%} 
+  \FunctionTok{slice\_max}\NormalTok{(}\StringTok{\textasciigrave{}}\AttributeTok{Operações de Crédito}\StringTok{\textasciigrave{}}\NormalTok{, }\AttributeTok{n =} \DecValTok{8}\NormalTok{) }\SpecialCharTok{\%\textgreater{}\%}
+  
+  \FunctionTok{merge}\NormalTok{(Dados.sum, }\AttributeTok{by =} \FunctionTok{c}\NormalTok{(}\StringTok{"Período"}\NormalTok{,}\StringTok{"Subsetor"}\NormalTok{), }\AttributeTok{all.x =}\NormalTok{ T) }\SpecialCharTok{\%\textgreater{}\%}
+  \FunctionTok{mutate}\NormalTok{(Participação }\OtherTok{=}\NormalTok{ (}\StringTok{\textasciigrave{}}\AttributeTok{Operações de Crédito}\StringTok{\textasciigrave{}}\SpecialCharTok{/}
+                         \StringTok{\textasciigrave{}}\AttributeTok{Total das operações de crédito}\StringTok{\textasciigrave{}}\NormalTok{)}\SpecialCharTok{*}\DecValTok{100}\NormalTok{) }\SpecialCharTok{\%\textgreater{}\%}
+  \FunctionTok{group\_by}\NormalTok{(Subsetor, Período) }\SpecialCharTok{\%\textgreater{}\%}
+  \FunctionTok{summarise}\NormalTok{(}\StringTok{\textasciigrave{}}\AttributeTok{RC Crédito}\StringTok{\textasciigrave{}} \OtherTok{=} \FunctionTok{sum}\NormalTok{(Participação)) }\SpecialCharTok{\%\textgreater{}\%} \FunctionTok{mutate}\NormalTok{(}\AttributeTok{Indicador =} \StringTok{"CR8"}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## `summarise()` has grouped output by 'Subsetor'. You can override using the
+## `.groups` argument.
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{CR8 }\OtherTok{\textless{}{-}} \FunctionTok{merge}\NormalTok{(CR8\_a, CR8\_c, }\AttributeTok{by =} \FunctionTok{c}\NormalTok{(}\StringTok{"Período"}\NormalTok{,}\StringTok{"Subsetor"}\NormalTok{))}
+\end{Highlighting}
+\end{Shaded}
+
+5 - Consolidando todas as informações em um só data.frame.
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{OC }\OtherTok{\textless{}{-}} \FunctionTok{bind\_rows}\NormalTok{(CR4, CR8)}
+
+\NormalTok{OC }\SpecialCharTok{\%\textless{}\textgreater{}\%} \FunctionTok{pivot\_longer}\NormalTok{(}\AttributeTok{cols =} \StringTok{\textasciigrave{}}\AttributeTok{RC Ativo}\StringTok{\textasciigrave{}}\SpecialCharTok{:}\StringTok{\textasciigrave{}}\AttributeTok{RC Crédito}\StringTok{\textasciigrave{}}\NormalTok{, }
+                     \AttributeTok{values\_to =} \StringTok{"Participação"}\NormalTok{, }
+                     \AttributeTok{names\_to =} \StringTok{"CR"}\NormalTok{)}
+
+\CommentTok{\# retirando excessos}
+\NormalTok{gdata}\SpecialCharTok{::}\FunctionTok{keep}\NormalTok{(Dados.com, OC, Dados.sum, }\AttributeTok{sure =}\NormalTok{ T)}
+\end{Highlighting}
+\end{Shaded}
+
+Pronto! Consolidamos a base correspondente a relação de concentração.
+Agora é tarefa nossa realizar as operações para obter o Índice
+Hirschman-Herfindahl.
+
+Como mencionado antes, este índice toma como base a participação das
+empresas e as eleva ao quadrado, somando todos os valores da base. Para
+os dados que dispomos, esta operação é similar àquela realizada para a
+relação de concentração, com a diferença da operação matemática e do uso
+de todas as instituições dos segmentos, não apenas os maiores.
+
+Desta forma, realizamos isso em três etapas simples:
+
+1 - Sumarizando os valores para cada empresa por segmento (participação
+individual)\footnote{Perceba que aqui nós já aplicamos a exponenciação
+  da participação}.
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{HHI }\OtherTok{\textless{}{-}}\NormalTok{ Dados.com }\SpecialCharTok{\%\textgreater{}\%}
+  \FunctionTok{group\_by}\NormalTok{(Período, Subsetor) }\SpecialCharTok{\%\textgreater{}\%}
+  \FunctionTok{summarise}\NormalTok{(HHI\_crédito }\OtherTok{=}\NormalTok{ (}\StringTok{\textasciigrave{}}\AttributeTok{Operações de Crédito}\StringTok{\textasciigrave{}}\SpecialCharTok{/}
+                            \FunctionTok{sum}\NormalTok{(}\StringTok{\textasciigrave{}}\AttributeTok{Operações de Crédito}\StringTok{\textasciigrave{}}\NormalTok{, }\AttributeTok{na.rm =}\NormalTok{ T)}\SpecialCharTok{*}\DecValTok{100}\NormalTok{)}\SpecialCharTok{\^{}}\DecValTok{2}\NormalTok{,}
+            \AttributeTok{HHI\_ativo =}\NormalTok{ (}\StringTok{\textasciigrave{}}\AttributeTok{Ativo total}\StringTok{\textasciigrave{}}\SpecialCharTok{/}
+                         \FunctionTok{sum}\NormalTok{(}\StringTok{\textasciigrave{}}\AttributeTok{Ativo total}\StringTok{\textasciigrave{}}\NormalTok{, }\AttributeTok{na.rm =}\NormalTok{ T)}\SpecialCharTok{*}\DecValTok{100}\NormalTok{)}\SpecialCharTok{\^{}}\DecValTok{2}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## `summarise()` has grouped output by 'Período', 'Subsetor'. You can override
+## using the `.groups` argument.
+\end{verbatim}
+
+2 - Agregando os valores por segmento, obtendo o HHI pela função
+\emph{sum()} (somatório).
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{HHI }\SpecialCharTok{\%\textless{}\textgreater{}\%}
+  \FunctionTok{group\_by}\NormalTok{(Período, Subsetor) }\SpecialCharTok{\%\textgreater{}\%}
+  \FunctionTok{summarise}\NormalTok{(Crédito }\OtherTok{=} \FunctionTok{sum}\NormalTok{(HHI\_crédito, }\AttributeTok{na.rm =}\NormalTok{ T),}
+            \StringTok{\textasciigrave{}}\AttributeTok{Ativo}\StringTok{\textasciigrave{}} \OtherTok{=} \FunctionTok{sum}\NormalTok{(HHI\_ativo, }\AttributeTok{na.rm =}\NormalTok{ T))}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## `summarise()` has grouped output by 'Período'. You can override using the
+## `.groups` argument.
+\end{verbatim}
+
+3 - Por último, nós juntamos as variáveis para facilitar a visualização
+no gráfico.
+
+\hypertarget{resultados}{%
+\section{Resultados}\label{resultados}}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{p }\OtherTok{\textless{}{-}} 
+  \FunctionTok{filter}\NormalTok{(OC, Subsetor }\SpecialCharTok{!=} \StringTok{"Bancos}\SpecialCharTok{\textbackslash{}n}\StringTok{ de desenvolvimento"}\NormalTok{) }\SpecialCharTok{\%\textgreater{}\%}
+  \FunctionTok{ggplot}\NormalTok{(}\FunctionTok{aes}\NormalTok{(}\AttributeTok{x =}\NormalTok{ Período, }\AttributeTok{y =}\NormalTok{ Participação)) }\SpecialCharTok{+}
+  \FunctionTok{geom\_bar}\NormalTok{(}
+    \FunctionTok{aes}\NormalTok{(}\AttributeTok{color =}\NormalTok{ Indicador, }\AttributeTok{fill =}\NormalTok{ Indicador),}
+    \AttributeTok{stat =} \StringTok{"identity"}\NormalTok{, }\AttributeTok{position =} \FunctionTok{position\_dodge}\NormalTok{(}\FloatTok{0.8}\NormalTok{),}
+    \AttributeTok{width =} \FloatTok{0.7}
+\NormalTok{    ) }\SpecialCharTok{+}
+  \FunctionTok{theme}\NormalTok{(}\AttributeTok{axis.text.x =} \FunctionTok{element\_text}\NormalTok{(}\AttributeTok{size =} \DecValTok{10}\NormalTok{, }
+                                   \AttributeTok{color =} \StringTok{\textquotesingle{}black\textquotesingle{}}\NormalTok{, }
+                                   \AttributeTok{angle =} \DecValTok{90}\NormalTok{, }
+                                   \AttributeTok{vjust =}\NormalTok{ .}\DecValTok{3}\NormalTok{))}
+
+\NormalTok{p }\OtherTok{\textless{}{-}}\NormalTok{ p }\SpecialCharTok{+} \FunctionTok{geom\_text}\NormalTok{(}
+  \FunctionTok{aes}\NormalTok{(}\AttributeTok{label =} \FunctionTok{round}\NormalTok{(Participação,}\DecValTok{0}\NormalTok{), }\AttributeTok{group =}\NormalTok{ Indicador), }
+  \AttributeTok{position =} \FunctionTok{position\_dodge}\NormalTok{(}\FloatTok{0.8}\NormalTok{),}
+  \AttributeTok{vjust =} \SpecialCharTok{{-}}\FloatTok{0.3}\NormalTok{, }\AttributeTok{size =} \FloatTok{3.5}
+\NormalTok{) }
+
+\NormalTok{p }\SpecialCharTok{+} \FunctionTok{facet\_grid}\NormalTok{(CR}\SpecialCharTok{\textasciitilde{}}\NormalTok{Subsetor) }\SpecialCharTok{+} \FunctionTok{theme\_bw}\NormalTok{() }
+\end{Highlighting}
+\end{Shaded}
+
+\includegraphics{Script-CB---df_files/figure-latex/unnamed-chunk-16-1.pdf}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{test }\OtherTok{\textless{}{-}}
+\FunctionTok{ggplot}\NormalTok{(HHI, }\AttributeTok{stat =} \StringTok{\textquotesingle{}identity\textquotesingle{}}\NormalTok{, }\AttributeTok{position =} \StringTok{"dodge"}\NormalTok{, }
+  \FunctionTok{aes}\NormalTok{(}\AttributeTok{x =}\NormalTok{ Período, }\AttributeTok{y =}\NormalTok{ Índice, }\AttributeTok{group =}\NormalTok{ Tipo, }\AttributeTok{label =} \FunctionTok{round}\NormalTok{(Índice,}\DecValTok{0}\NormalTok{), }\AttributeTok{fill =}\NormalTok{ Tipo)) }\SpecialCharTok{+}
+  \FunctionTok{geom\_line}\NormalTok{(}\AttributeTok{alpha =} \FloatTok{0.8}\NormalTok{, }\AttributeTok{stroke =} \DecValTok{0}\NormalTok{, }\AttributeTok{size =} \FloatTok{1.1}\NormalTok{) }\SpecialCharTok{+}
+  \FunctionTok{geom\_point}\NormalTok{() }\SpecialCharTok{+}
+  \FunctionTok{geom\_label}\NormalTok{(}\AttributeTok{segment.colour=}\StringTok{"black"}\NormalTok{, }\AttributeTok{size =}\FloatTok{3.1}\NormalTok{) }\SpecialCharTok{+} 
+  \FunctionTok{facet\_wrap}\NormalTok{(}\SpecialCharTok{\textasciitilde{}}\NormalTok{Subsetor, }\AttributeTok{scales =} \StringTok{"free\_y"}\NormalTok{) }\SpecialCharTok{+}
+\FunctionTok{labs}\NormalTok{(}\AttributeTok{title =} \StringTok{"Concentração Bancária {-} Índice de Hirschman{-}Herfindahl (HHI)"}\NormalTok{, }
+     \AttributeTok{subtitle =} \StringTok{"1º tri de 2017{-}2021"}\NormalTok{,}
+     \AttributeTok{x =} \StringTok{"Período"}\NormalTok{,}
+     \AttributeTok{y =} \StringTok{"Pontos HHI"}\NormalTok{) }\SpecialCharTok{+}
+  \FunctionTok{theme\_bw}\NormalTok{() }\SpecialCharTok{+}
+        \FunctionTok{theme}\NormalTok{(}\AttributeTok{axis.title =} \FunctionTok{element\_text}\NormalTok{(}\AttributeTok{size =} \DecValTok{12}\NormalTok{),}
+        \AttributeTok{axis.title.y =} \FunctionTok{element\_text}\NormalTok{(}\AttributeTok{size =} \FloatTok{11.5}\NormalTok{),                 }
+        \AttributeTok{axis.text.x =} \FunctionTok{element\_text}\NormalTok{(}\AttributeTok{size =} \DecValTok{10}\NormalTok{, }\AttributeTok{color =} \StringTok{\textquotesingle{}black\textquotesingle{}}\NormalTok{, }\AttributeTok{angle =} \DecValTok{90}\NormalTok{, }\AttributeTok{vjust =}\NormalTok{ .}\DecValTok{3}\NormalTok{),}
+        \AttributeTok{axis.text.y =} \FunctionTok{element\_text}\NormalTok{(}\AttributeTok{size =} \DecValTok{11}\NormalTok{, }\AttributeTok{color =} \StringTok{\textquotesingle{}black\textquotesingle{}}\NormalTok{, }\AttributeTok{face =} \StringTok{\textquotesingle{}bold\textquotesingle{}}\NormalTok{),}
+        \AttributeTok{legend.title =} \FunctionTok{element\_text}\NormalTok{(}\AttributeTok{size =} \DecValTok{12}\NormalTok{),}
+        \AttributeTok{legend.position=}\StringTok{\textquotesingle{}bottom\textquotesingle{}}\NormalTok{,}
+        \AttributeTok{legend.text=}\FunctionTok{element\_text}\NormalTok{(}\AttributeTok{size=}\DecValTok{13}\NormalTok{),}
+        \AttributeTok{legend.background =} \FunctionTok{element\_rect}\NormalTok{(}\AttributeTok{fill=}\StringTok{"ghostwhite"}\NormalTok{, }\AttributeTok{size=}\DecValTok{1}\NormalTok{),}
+        \AttributeTok{axis.ticks =} \FunctionTok{element\_line}\NormalTok{(}\AttributeTok{colour =} \StringTok{"grey70"}\NormalTok{, }\AttributeTok{size =} \FloatTok{0.2}\NormalTok{),}
+        \AttributeTok{panel.grid.major =} \FunctionTok{element\_line}\NormalTok{(}\AttributeTok{colour =} \StringTok{"grey70"}\NormalTok{),}
+        \AttributeTok{strip.text =} \FunctionTok{element\_text}\NormalTok{(}\AttributeTok{face =} \StringTok{\textquotesingle{}bold\textquotesingle{}}\NormalTok{)) }
+  
+\NormalTok{test}
+\end{Highlighting}
+\end{Shaded}
+
+\includegraphics{Script-CB---df_files/figure-latex/unnamed-chunk-17-1.pdf}
+
+\end{document}
